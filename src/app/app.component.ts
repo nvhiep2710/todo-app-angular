@@ -1,5 +1,4 @@
-import { Component } from '@angular/core';
-import { TodoService } from './services/todo.service';
+import { Component, OnInit } from '@angular/core';
 
 @Component({
   selector: 'app-root',
@@ -7,13 +6,6 @@ import { TodoService } from './services/todo.service';
   styleUrls: ['./app.component.css'],
 })
 export class AppComponent implements OnInit {
-  title = 'todo-app';
-
-  hasTodo$: Observable<boolean>;
-
-  constructor(private todoService: TodoService) {}
-  ngOnInit() {
-    this.todoService.fetchFromLocalStrorage();
-    this.hasTodo$ = this.todoService.length$.pipe(map((length) => length > 0));
-  }
+  constructor() {}
+  ngOnInit() {}
 }

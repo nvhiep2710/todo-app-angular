@@ -1,0 +1,17 @@
+<app-navigation-header></app-navigation-header>
+<div class="wrapper d-flex flex-column align-items-center w-100">
+  <h1 class="title">todos</h1>
+  <div class="row justify-content-center w-100">
+    <div class="todo-wrapper p-0 d-flex flex-column col-md-6 col-sm-8">
+      <app-header></app-header>
+      <app-todo-item
+        *ngFor="let todo of todos$ | async"
+        [todo]="todo"
+        (changeStatus)="onChangeStatusTodo($event)"
+        (editTodo)="onEditTodo($event)"
+        (deleteTodo)="onDeleteTodo($event)"
+      ></app-todo-item>
+      <app-footer *ngIf="hasTodo$ | async"></app-footer>
+    </div>
+  </div>
+</div>

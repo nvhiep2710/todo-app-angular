@@ -1,3 +1,8 @@
-<p>
-  todo-input works!
-</p>
+<input
+  type="text"
+  [(ngModel)]="todoContent"
+  (keyup.enter)="onSubmit($event)"
+  class="input-add w-100 h-100 border-0"
+  placeholder="Add todo"
+  required
+/>

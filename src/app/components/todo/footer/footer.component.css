@@ -1,15 +1,27 @@
 .footer {
   position: relative;
+  justify-content: space-around;
   height: 40px;
   border-top: 1px solid rgba(0, 0, 0, 0.2);
 }
 .footer .filter-btn {
-  padding: 5px;
   border-radius: 0.25rem;
   transition: 250ms all ease-in-out;
   outline: none;
   cursor: pointer;
   margin-right: 5px;
   background-color: #fff;
-  border: 1px solid #fff;
+  padding: 0 10px;
+}
+.filter {
+  padding: 7px 0;
+}
+.active {
+  border: 1px solid #000 !important;
+}
+.clear-completed-btn {
+  visibility: hidden;
+}
+.visible {
+  visibility: visible;
 }

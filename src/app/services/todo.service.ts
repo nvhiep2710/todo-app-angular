@@ -1,33 +1,40 @@
 import { Injectable } from '@angular/core';
-im
+import { BehaviorSubject, Observable } from 'rxjs';
+import { Todo } from '../models/todo.model';
+import { Filter } from '../models/filtering.model';
+import { LocalStorageService } from './local-storage.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class TodoService {
-
-
+  some(arg0: (t: any) => any): any {
+    throw new Error('Method not implemented.');
+  }
   private static readonly TodoStorageKey = 'todos';
+
   private todos: Todo[];
   private filteredTodos: Todo[];
-  private lengthSubject: BehaviorSubject<number> = new BehaviorSubject<
-    number
-  >();
-  private displayTodosSubject: BehaviorSubject<Todo[]> = new BehaviorSubject<Todo[]>({});
+  private lengthSubject: BehaviorSubject<number> = new BehaviorSubject<number>(
+    0
+  );
+  private displayTodosSubject: BehaviorSubject<Todo[]> = new BehaviorSubject<
+    Todo[]
+  >([]);
   private currentFilter: Filter = Filter.All;
 
   todos$: Observable<Todo[]> = this.displayTodosSubject.asObservable();
 
-  length$: Observable<Todo[]> = this.lengthSubject.asObservable();
+  length$: Observable<number> = this.lengthSubject.asObservable();
 
   constructor(private storageService: LocalStorageService) {}
 
-  fetchFromLocalStrorage() {
-    this.todos = this.storageService.getValue<Todo[]>(TodoService.TodoStorageKey) || [];
-    this.filteredTodos = [...this.todos.map(todo => ({...todo})];
+  fetchFromLocalStorage() {
+    this.todos =
+      this.storageService.getValue<Todo[]>(TodoService.TodoStorageKey) || [];
+    this.filteredTodos = [...this.todos.map((todo) => ({ ...todo }))];
     this.updateTodosData();
   }
-
 
   updateToLocalStorage() {
     this.storageService.setObject(TodoService.TodoStorageKey, this.todos);
@@ -35,24 +42,66 @@ export class TodoService {
     this.updateTodosData();
   }
 
-  filterTodos(filter : Filter, isFiltering: boolean = true){
+  addTodo(content: string) {
+    const date = new Date(Date.now()).getTime();
+    const newTodo = new Todo(date, content);
+    this.todos.unshift(newTodo);
+    this.updateToLocalStorage();
+  }
+
+  changeStatus(id: number, isCompleted: boolean) {
+    const index = this.todos.findIndex((todo) => todo.id === id);
+    const todo = this.todos[index];
+    todo.isCompleted = isCompleted;
+    this.todos.splice(index, 1, todo);
+    this.updateToLocalStorage();
+  }
+  editTodo(id: number, content: string) {
+    const index = this.todos.findIndex((todo) => todo.id === id);
+    const todo = this.todos[index];
+    todo.content = content;
+    this.todos.splice(index, 1, todo);
+    this.updateToLocalStorage();
+  }
+  deleteTodo(id: number) {
+    const index = this.todos.findIndex((todo) => todo.id === id);
+    this.todos.splice(index, 1);
+    this.updateToLocalStorage();
+  }
+  ToggleAll() {
+    this.todos = this.todos.map((todo) => {
+      return {
+        ...todo,
+        isCompleted: !this.todos.every((t) => t.isCompleted),
+      };
+    });
+    this.updateToLocalStorage();
+  }
+  clearCompleted() {
+    this.todos = this.todos.filter((todo) => !todo.isCompleted);
+    this.updateToLocalStorage();
+  }
+
+  filterTodos(filter: Filter, isFiltering: boolean = true) {
     this.currentFilter = filter;
-    switch(filter){
-      case filter.Active:
-        this.filteredTodos = this.todos.filter(todo => !todo.isCompleted);
+    switch (filter) {
+      case Filter.Active:
+        this.filteredTodos = this.todos.filter((todo) => !todo.isCompleted);
         break;
-        case filter.Completed:
-        this.filteredTodos = this.todos.filter(todo => todo.isCompleted);
+      case Filter.Completed:
+        this.filteredTodos = this.todos.filter((todo) => todo.isCompleted);
         break;
-        case filter.All:
-        this.filteredTodos = [...this.todos.filter(todo => ({...todo}))];
+      case Filter.All:
+        this.filteredTodos = [...this.todos.filter((todo) => ({ ...todo }))];
         break;
+    }
+    if (isFiltering) {
+      this.updateTodosData();
     }
   }
 
-  private updateTodosData(){
+  private updateTodosData() {
     this.displayTodosSubject.next(this.filteredTodos);
     this.lengthSubject.next(this.todos.length);
   }
-  
 }

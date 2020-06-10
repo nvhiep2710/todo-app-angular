@@ -1,0 +1,45 @@
+<div class="wrapper d-flex flex-column align-items-center">
+  <h3 class="title">Login</h3>
+  <div class="login-wrapper p-0 d-flex flex-column col-md-6 col-sm-8">
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+      <div class="form-group">
+        <label>Email</label>
+        <input
+          type="email"
+          class="form-control"
+          formControlName="email"
+          placeholder="Enter email"
+        />
+        <div *ngIf="submitted && f.email.errors" class="errors">
+          <div *ngIf="f.email.errors.required">Email is required</div>
+          <div *ngIf="f.email.errors.email">
+            Email must be a valid email address
+          </div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Password</label>
+        <input
+          type="password"
+          formControlName="password"
+          class="form-control"
+          placeholder="Password"
+        />
+        <div *ngIf="submitted && f.password.errors" class="errors">
+          <div *ngIf="f.password.errors.required">Password is required</div>
+          <div *ngIf="f.password.errors.minlength">
+            Password must be at least 6 characters
+          </div>
+        </div>
+      </div>
+      <div>
+        <button type="submit" class="btn btn-primary">
+          Login
+        </button>
+        <a routerLink="/register" routerLinkActive="active" class="pl-2"
+          >Register</a
+        >
+      </div>
+    </form>
+  </div>
+</div>

@@ -1,6 +1,5 @@
 .icon-wrapper {
-  width: 40px;
-  line-height: 40px;
+  padding-right: 12px;
   color: grey;
   background-color: #fff;
   transition: 250ms all ease-in-out;
